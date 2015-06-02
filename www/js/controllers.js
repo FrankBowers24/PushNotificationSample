@@ -48,7 +48,6 @@ app.controller('AppCtrl', function($scope, $cordovaPush, $cordovaDialogs, $cordo
             console.log("Register success " + result);
 
             $cordovaToast.showShortCenter('Registered for push notifications');
-            console.log("after $codovaToast.showShortCenter 2");
             $scope.registerDisabled=true;
             // ** NOTE: Android regid result comes back in the pushNotificationReceived, only iOS returned here
             if (ionic.Platform.isIOS()) {
@@ -138,8 +137,7 @@ app.controller('AppCtrl', function($scope, $cordovaPush, $cordovaDialogs, $cordo
         // Create a random userid to store with it
         var user = { user: 'user' + Math.floor((Math.random() * 10000000) + 1), type: type, token: $scope.regId };
         console.log("Post token for registered device with data " + JSON.stringify(user));
-
-        $http.post('http://localhost:8000/subscribe', JSON.stringify(user))
+        $http.post('http://frank-push.herokuapp.com/subscribe', JSON.stringify(user))
             .success(function (data, status) {
                 console.log("Token stored, device is successfully subscribed to receive push notifications.");
             })
@@ -155,7 +153,7 @@ app.controller('AppCtrl', function($scope, $cordovaPush, $cordovaDialogs, $cordo
     // previously so multiple userids will be created with the same token unless you add code to check).
     function removeDeviceToken() {
         var tkn = {"token": $scope.regId};
-        $http.post('http://localhost:8000/unsubscribe', JSON.stringify(tkn))
+        $http.post('http://frank-push.herokuapp.com/unsubscribe', JSON.stringify(tkn))
             .success(function (data, status) {
                 console.log("Token removed, device is successfully unsubscribed and will not receive push notifications.");
             })
