@@ -1,0 +1,35 @@
+{
+  "name": "push-notification-sample",
+  "version": "1.0.0",
+  "description": "push notification sample",
+  "main": "sendGCM.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FrankBowers24/PushNotificationSample.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FrankBowers24/PushNotificationSample/issues"
+  },
+  "homepage": "https://github.com/FrankBowers24/PushNotificationSample#readme",
+  "cordovaPlugins": [
+    "org.apache.cordova.console",
+    "org.apache.cordova.device",
+    "org.apache.cordova.dialogs",
+    "org.apache.cordova.file",
+    "org.apache.cordova.media",
+    {
+      "locator": "https://github.com/phonegap-build/PushPlugin",
+      "id": "com.phonegap.plugins.PushPlugin"
+    },
+    {
+      "locator": "https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin.git",
+      "id": "nl.x-services.plugins.toast"
+    }
+  ],
+  "cordovaPlatforms": []
+}

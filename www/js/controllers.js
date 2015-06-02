@@ -12,6 +12,19 @@ app.controller('AppCtrl', function($scope, $cordovaPush, $cordovaDialogs, $cordo
         $scope.register();
     });
 
+    window.onNotificationGCM = function (notification) {
+        console.log('onNotificationGCM called: ', notification);
+        if (ionic.Platform.isAndroid()) {
+            handleAndroid(notification);
+        }
+        else if (ionic.Platform.isIOS()) {
+            handleIOS(notification);
+            $scope.$apply(function () {
+                $scope.notifications.push(JSON.stringify(notification.alert));
+            })
+        }
+    };
+
 
     // Register
     $scope.register = function () {
@@ -19,7 +32,8 @@ app.controller('AppCtrl', function($scope, $cordovaPush, $cordovaDialogs, $cordo
 
         if (ionic.Platform.isAndroid()) {
             config = {
-                "senderID": "YOUR_GCM_PROJECT_ID" // REPLACE THIS WITH YOURS FROM GCM CONSOLE - also in the project URL like: https://console.developers.google.com/project/434205989073
+                "senderID": "659702567252", // REPLACE THIS WITH YOURS FROM GCM CONSOLE - also in the project URL like: https://console.developers.google.com/project/434205989073
+                'ecb': 'onNotificationGCM'
             };
         }
         else if (ionic.Platform.isIOS()) {
@@ -34,6 +48,7 @@ app.controller('AppCtrl', function($scope, $cordovaPush, $cordovaDialogs, $cordo
             console.log("Register success " + result);
 
             $cordovaToast.showShortCenter('Registered for push notifications');
+            console.log("after $codovaToast.showShortCenter 2");
             $scope.registerDisabled=true;
             // ** NOTE: Android regid result comes back in the pushNotificationReceived, only iOS returned here
             if (ionic.Platform.isIOS()) {
@@ -47,6 +62,7 @@ app.controller('AppCtrl', function($scope, $cordovaPush, $cordovaDialogs, $cordo
 
     // Notification Received
     $scope.$on('$cordovaPush:notificationReceived', function (event, notification) {
+        console.log("NOTIFICATION RECEIVED.");
         console.log(JSON.stringify([notification]));
         if (ionic.Platform.isAndroid()) {
             handleAndroid(notification);
@@ -123,7 +139,7 @@ app.controller('AppCtrl', function($scope, $cordovaPush, $cordovaDialogs, $cordo
         var user = { user: 'user' + Math.floor((Math.random() * 10000000) + 1), type: type, token: $scope.regId };
         console.log("Post token for registered device with data " + JSON.stringify(user));
 
-        $http.post('http://192.168.1.16:8000/subscribe', JSON.stringify(user))
+        $http.post('http://localhost:8000/subscribe', JSON.stringify(user))
             .success(function (data, status) {
                 console.log("Token stored, device is successfully subscribed to receive push notifications.");
             })
@@ -139,7 +155,7 @@ app.controller('AppCtrl', function($scope, $cordovaPush, $cordovaDialogs, $cordo
     // previously so multiple userids will be created with the same token unless you add code to check).
     function removeDeviceToken() {
         var tkn = {"token": $scope.regId};
-        $http.post('http://192.168.1.16:8000/unsubscribe', JSON.stringify(tkn))
+        $http.post('http://localhost:8000/unsubscribe', JSON.stringify(tkn))
             .success(function (data, status) {
                 console.log("Token removed, device is successfully unsubscribed and will not receive push notifications.");
             })
